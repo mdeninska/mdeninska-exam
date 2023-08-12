@@ -44,6 +44,25 @@ jobs:
       with:
         service-id: ${{ secrets.DEPLOY_HOOK }}
         api-key: ${{ secrets.RENDER_API_KEY }}
-        
+
+
+  ui_test:
+    runs-on: ubuntu-latest
+    needs: deploy
+    strategy:
+      matrix:
+        node-version: [16.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    steps:
+     - uses: actions/checkout@v3
+     - name: Testing UI
+       uses: actions/setup-node@v3
+       with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+     - run: npx playwright install
+     - run: npm install
+     - run: npm run test:ui
+            
         
   
